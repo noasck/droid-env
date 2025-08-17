@@ -1,7 +1,9 @@
+#include "../../ndk/sources/android/native_app_glue/android_native_app_glue.h"
+#include "../../ndk/sources/android/native_app_glue/android_native_app_glue.c"
 #include <android/native_activity.h>
 #include <android/log.h>
-#include <EGL/egl.h>
-#include <GLES2/gl2.h>
+#include "../../ndk/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/include/EGL/egl.h"
+#include "../../ndk/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/include/GLES2/gl2.h"
 
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO,"Triangle",__VA_ARGS__)
 
@@ -70,7 +72,7 @@ void drawFrame() {
 
 static void handle_cmd(struct android_app* app, int32_t cmd) {
 	if (cmd == APP_CMD_INIT_WINDOW && app->window != NULL) {
-		initGL(app->window);
+		initGL((EGLNativeWindowType)(app->window));
 	}
 }
 
@@ -79,7 +81,7 @@ void android_main(struct android_app* app) {
 	int events;
 	struct android_poll_source* source;
 	while (1) {
-		while (ALooper_pollAll(0, NULL, &events, (void**)&source) >= 0) {
+		while (ALooper_pollOnce(0, NULL, &events, (void**)&source) >= 0) {
 			if (source) source->process(app, source);
 			if (app->destroyRequested) return;
 		}
