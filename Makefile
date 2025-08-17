@@ -1,23 +1,22 @@
 APP_NAME := GLApp
 PKG_NAME := com.termux.glapp
 BUILD_DIR := build
-LIB_DIR := $(BUILD_DIR)/lib/arm64-v8a
+LIB_DIR := ${PREFIX}/lib
 SRC := jni/main.cpp
 NDK_CC := aarch64-linux-android-clang
 NDK_CXX := aarch64-linux-android-clang++
-NDK_SYSROOT := $PREFIX/lib/android-21
+NDK_SYSROOT := ${PREFIX}
 
-APK := $(BUILD_DIR)/$(APP_NAME).apk
-UNSIGNED_APK := $(BUILD_DIR)/$(APP_NAME)-unsigned.apk
+APK := ${BUILD_DIR}/${APP_NAME}.apk
+UNSIGNED_APK := ${BUILD_DIR}/${APP_NAME}-unsigned.apk
 AAPT := aapt
 
 all: $(APK)
 
-$(LIB_DIR)/libmain.so: $(SRC)
-	mkdir -p $(LIB_DIR)
+$(LIB_DIR)/libmain.so: ${SRC}
 	$(NDK_CXX) -fPIC -shared -o $@ $< \
-		-I$NDK_SYSROOT/include \
-		-L$NDK_SYSROOT/lib -llog -landroid -lGLESv2 -lEGL
+		-I${NDK_SYSROOT}/include \
+		-L${NDK_SYSROOT}/lib -llog -landroid -lGLESv2 -lEGL
 
 $(UNSIGNED_APK): AndroidManifest.xml $(LIB_DIR)/libmain.so
 	mkdir -p $(BUILD_DIR)/res

@@ -1,4 +1,5 @@
 #include <jni.h>
+#include <android/native_app_glue.h>
 #include <android/native_activity.h>
 #include <android/input.h>
 #include <android/native_window_jni.h>
