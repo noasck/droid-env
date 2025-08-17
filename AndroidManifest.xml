@@ -1,13 +1,18 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.nativegl">
-
-    <application android:label="NativeGL">
-        <activity android:name="android.app.NativeActivity"
-            android:label="NativeGL"
-            android:configChanges="orientation|keyboardHidden">
-            <meta-data android:name="android.app.lib_name"
-                android:value="nativegl" />
-        </activity>
-    </application>
-
+    package="com.termux.glapp"
+    android:versionCode="1"
+    android:versionName="1.0">
+  <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="30"/>
+  <application android:label="GLApp" android:hasCode="false">
+    <activity android:name="android.app.NativeActivity"
+        android:label="GLApp"
+        android:configChanges="orientation|keyboardHidden">
+      <meta-data android:name="android.app.lib_name" android:value="main"/>
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN"/>
+        <category android:name="android.intent.category.LAUNCHER"/>
+      </intent-filter>
+    </activity>
+  </application>
 </manifest>
+
