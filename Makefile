@@ -1,31 +1,34 @@
 APP_NAME := GLApp
 PKG_NAME := com.termux.glapp
-NDK := $(HOME)/ndk
-AAPT := aapt
-
-ARCH := arm64-v8a
 BUILD_DIR := build
-LIB_DIR := $(BUILD_DIR)/lib/$(ARCH)
+LIB_DIR := $(BUILD_DIR)/lib/arm64-v8a
+SRC := jni/main.cpp
+NDK_CC := aarch64-linux-android-clang
+NDK_CXX := aarch64-linux-android-clang++
+NDK_SYSROOT := $PREFIX/lib/android-21
+
 APK := $(BUILD_DIR)/$(APP_NAME).apk
 UNSIGNED_APK := $(BUILD_DIR)/$(APP_NAME)-unsigned.apk
+AAPT := aapt
 
 all: $(APK)
 
-$(LIB_DIR)/libmain.so: jni/main.cpp Android.mk Application.mk
-	$(NDK)/ndk-build NDK_PROJECT_PATH=. \
-		APP_BUILD_SCRIPT=./Android.mk \
-		NDK_APPLICATION_MK=./Application.mk \
-		APP_PLATFORM=android-21
+$(LIB_DIR)/libmain.so: $(SRC)
+	mkdir -p $(LIB_DIR)
+	$(NDK_CXX) -fPIC -shared -o $@ $< \
+		-I$NDK_SYSROOT/include \
+		-L$NDK_SYSROOT/lib -llog -landroid -lGLESv2 -lEGL
 
 $(UNSIGNED_APK): AndroidManifest.xml $(LIB_DIR)/libmain.so
 	mkdir -p $(BUILD_DIR)/res
-	$(AAPT) package -F $@ -M AndroidManifest.xml -S $(BUILD_DIR)/res -I $(NDK)/platforms/android-21/arch-arm64/usr/include
-	$(AAPT) add $@ lib/$(ARCH)/libmain.so
+	$(AAPT) package -F $@ -M AndroidManifest.xml -S $(BUILD_DIR)/res
+	$(AAPT) add $@ lib/arm64-v8a/libmain.so
 
 $(APK): $(UNSIGNED_APK)
 	cp $< $@
 
 clean:
-	rm -rf $(BUILD_DIR) libs obj
+	rm -rf $(BUILD_DIR)
 
 .PHONY: all clean
+
