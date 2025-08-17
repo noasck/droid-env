@@ -11,8 +11,11 @@ UNSIGNED_APK := $(BUILD_DIR)/$(APP_NAME)-unsigned.apk
 
 all: $(APK)
 
-$(LIB_DIR)/libmain.so: jni/main.cpp Android.mk
-	$(NDK)/ndk-build NDK_PROJECT_PATH=. APP_BUILD_SCRIPT=./Android.mk APP_PLATFORM=android-21
+$(LIB_DIR)/libmain.so: jni/main.cpp Android.mk Application.mk
+	$(NDK)/ndk-build NDK_PROJECT_PATH=. \
+		APP_BUILD_SCRIPT=./Android.mk \
+		NDK_APPLICATION_MK=./Application.mk \
+		APP_PLATFORM=android-21
 
 $(UNSIGNED_APK): AndroidManifest.xml $(LIB_DIR)/libmain.so
 	mkdir -p $(BUILD_DIR)/res
